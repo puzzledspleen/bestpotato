@@ -1,4 +1,4 @@
-name: Add Form-Submitted Issues to Project
+name: Move Labeled Issue to Project Board
 
 on:
   issues:
@@ -6,19 +6,29 @@ on:
       - labeled
 
 jobs:
-  add_to_project:
+  move-labeled-issue-to-board:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
+      - name: Check if Issue has Specific Label
+        id: check-label
+        uses: actions/github-script@v5
+        with:
+          script: |
+            const issueLabels = context.payload.issue.labels.map(label => label.name);
+            const formLabel = 'Submitted via Form'; // Replace with your specific label
+            core.setOutput('has_specific_label', issueLabels.includes(formLabel));
 
-      - name: Add Issue to Project
-        if: contains(github.event.issue.labels.*.name, 'Submitted via Form')
-        run: |
-          ISSUE_NUMBER=$(jq -r .issue.number "$GITHUB_EVENT_PATH")
-          COLUMN_ID="1234567"  # Replace with the actual column ID
-
-          echo "Adding issue #$ISSUE_NUMBER to project column $COLUMN_ID"
-          
-          # Use curl or other tools to send the API request
+      - name: Move Issue to Project Board
+        if: steps.check-label.outputs.has_specific_label == 'true'
+        uses: actions/github-script@v5
+        with:
+          script: |
+            const issueNumber = context.issue.number;
+            const columnId = 1; // Replace with the column ID of the desired project board column
+            await github.projects.createCard({
+              column_id: columnId,
+              content_id: issueNumber,
+              content_type: 'Issue'
+            });
+            console.log(`Issue ${issueNumber} moved to project board column ${columnId}`);
