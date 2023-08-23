@@ -27,7 +27,7 @@ jobs:
             const issueNumber = context.issue.number;
             const columnId = 1; // Replace with the column ID of the desired project board column
             await github.projects.createCard({
-              column_id: columnId,
+              column_id: 1,
               content_id: issueNumber,
               content_type: 'Issue'
             });
