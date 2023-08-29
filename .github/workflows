@@ -25,10 +25,9 @@ jobs:
         with:
           script: |
             const issueNumber = context.issue.number;
-            const columnId = 1; // Replace with the column ID of the desired project board column
             await github.projects.createCard({
-              column_id: 1,
+              column: Todo,
               content_id: issueNumber,
               content_type: 'Issue'
             });
-            console.log(`Issue ${issueNumber} moved to project board column ${columnId}`);
+            console.log(`Issue ${issueNumber} moved to project board column Todo`);
