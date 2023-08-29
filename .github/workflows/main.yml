@@ -25,9 +25,9 @@ jobs:
         with:
           script: |
             const issueNumber = context.issue.number;
-            const { projects } = github.context; // Destructure the projects object from the github context
-            await projects.createCard({
+            await github.projects.createCard({
+              column_id: COLUMN_ID, // Replace with the actual column_id
               content_id: issueNumber,
               content_type: 'Issue'
             });
-            console.log(`Issue ${issueNumber} moved to project board column Todo`);
+            console.log(`Issue ${issueNumber} moved to project board column ${COLUMN_ID}`);
