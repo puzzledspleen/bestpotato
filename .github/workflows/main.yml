@@ -1,0 +1,33 @@
+name: Move Labeled Issue to Project Board
+
+on:
+  issues:
+    types:
+      - labeled
+
+jobs:
+  move-labeled-issue-to-board:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check if Issue has Specific Label
+        id: check-label
+        uses: actions/github-script@v5
+        with:
+          script: |
+            const issueLabels = context.payload.issue.labels.map(label => label.name);
+            const formLabel = 'Submitted via Form'; // Replace with your specific label
+            core.setOutput('has_specific_label', issueLabels.includes(formLabel));
+
+      - name: Move Issue to Project Board
+        if: steps.check-label.outputs.has_specific_label == 'true'
+        uses: actions/github-script@v5
+        with:
+          script: |
+            const issueNumber = context.issue.number;
+            await github.projects.createCard({
+              column: Todo,
+              content_id: issueNumber,
+              content_type: 'Issue'
+            });
+            console.log(`Issue ${issueNumber} moved to project board column Todo`);
