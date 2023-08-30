@@ -1,8 +1,10 @@
 name: Move Labeled Issue to Project Board
+
 on:
   issues:
     types:
       - labeled
+
 jobs:
   move-labeled-issue-to-board:
     runs-on: ubuntu-latest
@@ -16,17 +18,12 @@ jobs:
             const issueLabels = context.payload.issue.labels.map(label => label.name);
             const formLabel = 'Submitted via Form'; // Replace with your specific label
             core.setOutput('has_specific_label', issueLabels.includes(formLabel));
+      
       - name: Move Issue to Project Board
         if: steps.check-label.outputs.has_specific_label == 'true'
         uses: alex-page/github-project-automation-plus@7ffb872c64bd809d23563a130a0a97d01dfa8f43
         with:
-          script: |
-            const issueNumber = context.issue.number;
-            await github.projects.createCard({
-              project: best potato project board,
-              column: Todo, // Replace with the actual column_id
-              content_id: issueNumber,
-              content_type: 'Issue',
-              repo-token: ${{ secrets.TOKEN }}
-            });
-            console.log(`Issue ${issueNumber} moved to project board column ${COLUMN_ID}`);
+          repo-token: ${{ secrets.TOKEN }}
+          project: 'best potato project board' 
+          column: 'Todo' 
+          action: move
