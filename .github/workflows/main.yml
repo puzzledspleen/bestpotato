@@ -12,7 +12,7 @@ jobs:
     steps:
       - name: Check if Issue has Specific Label
         id: check-label
-        uses: actions/github-script@v5
+        uses: actions/github-script@v16
         with:
           script: |
             const issueLabels = context.payload.issue.labels.map(label => label.name);
@@ -24,6 +24,6 @@ jobs:
         uses: alex-page/github-project-automation-plus@7ffb872c64bd809d23563a130a0a97d01dfa8f43
         with:
           repo-token: ${{ secrets.TOKEN }}
-          project: best potato project board
+          project: 1
           column: Todo
           action: move
