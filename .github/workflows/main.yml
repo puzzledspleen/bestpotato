@@ -26,6 +26,7 @@ jobs:
               project: best potato project board,
               column: Todo, // Replace with the actual column_id
               content_id: issueNumber,
-              content_type: 'Issue'
+              content_type: 'Issue',
+              repo-token: ${{ secrets.TOKEN }}
             });
             console.log(`Issue ${issueNumber} moved to project board column ${COLUMN_ID}`);
